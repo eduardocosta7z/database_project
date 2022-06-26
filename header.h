@@ -9,8 +9,13 @@
 #ifndef HEADER_H // include guard.
 #define HEADER_H
 
+#include <stdio.h>
+
 #define CLEAR "\e[1;1H\e[2J" // regex to clean the terminal.
 
-// TODO: space for the future functions definitions.
+int menu(int num_args, ...);
+void add_menu();
+void remove_menu();
+void search_menu();
 
 #endif
