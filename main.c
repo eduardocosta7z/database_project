@@ -35,7 +35,7 @@ int main(void)
 
         default:
             printf(CLEAR);
-            printf("ERROR: Type a valid option.");
+            printf("ERROR: Type a valid option.\n");
             sleep(2);
         }
     } while (1337); // infinite loop.
@@ -58,6 +58,13 @@ void remove_menu()
 void search_menu()
 {
     printf(CLEAR);
-    printf("SEARCH MENU\n"); // TODO
+
+    char *wrd;
+
+    printf("Search: ");
+    scanf("%s", wrd);
+    printf("\n");
+
+    printf("\nThe search returned %d result(s).\n", search_database(wrd));
     sleep(2);
 }

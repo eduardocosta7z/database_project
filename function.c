@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdarg.h> // used for functions with variable number of args.
 #include "header.h"
 
@@ -19,6 +20,32 @@ int menu(int num_args, ...) // automatically displays a menu.
     scanf("%d", &i);
 
     return i;
+}
+
+int search_database(char *wrd)
+{
+    char line[100];
+    int num_results = 0;
+
+    FILE *fptr = fopen("database.txt", "r");
+
+    if (fptr == NULL)
+    {
+        printf("ERROR: Couldn't find database.\n");
+        return 0;
+    }
+    while (fscanf(fptr, "%[^\n]\n", line) != EOF)
+    {
+        if (strstr(line, wrd) != NULL)
+        {
+            num_results++;
+            printf("%s\n", line);
+        }
+    }
+
+    fclose(fptr);
+
+    return num_results;
 }
 
 // TODO: space for future functions.
