@@ -1,8 +1,9 @@
 #include <string.h>
-#include <stdarg.h> // used for functions with variable number of args.
+#include <ctype.h>
+#include <stdarg.h>
 #include "header.h"
 
-int menu(int num_args, ...) // automatically displays a menu.
+int menu(int num_args, ...) // automatically displays a menu and returns the selected option
 {
     int i;
     va_list args;
@@ -22,10 +23,23 @@ int menu(int num_args, ...) // automatically displays a menu.
     return i;
 }
 
-int search_database(char *wrd)
+int y_or_n(char *txt) // printf
+{
+    char choice;
+
+    printf("%s [y/n]: ", txt);
+    scanf(" %c", &choice);
+
+    if (choice == 'y')
+        return 1;
+    else
+        return 0;
+}
+
+int search_database(char wrd[30]) // search for a word in the database, print the line that matches and returns the number of results
 {
     char line[100];
-    int num_results = 0;
+    int i, num_results = 0;
 
     FILE *fptr = fopen("database.txt", "r");
 
@@ -34,9 +48,15 @@ int search_database(char *wrd)
         printf("ERROR: Couldn't find database.\n");
         return 0;
     }
-    while (fscanf(fptr, "%[^\n]\n", line) != EOF)
+    while (fscanf(fptr, "%[^\n]\n", line) != EOF) // search the file line by line
     {
-        if (strstr(line, wrd) != NULL)
+        for (i = 0; wrd[i]; i++) // converts to lowercase
+            wrd[i] = tolower(wrd[i]);
+
+        for (i = 0; line[i]; i++)
+            line[i] = tolower(line[i]);
+
+        if (strstr(line, wrd) != NULL) // checks if line contains wrd
         {
             num_results++;
             printf("%s\n", line);
