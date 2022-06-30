@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #define CLEAR "\e[1;1H\e[2J" // regex to clean the terminal.
-#define LINE "----------------------------------------------------------------------------------------------\n"
+#define LINE "------------------------------------------------------------------------------------------------------\n"
 
 // start: function declaration for use in both main.c and function.c
 int menu(int num_args, ...);
@@ -28,7 +28,7 @@ struct database_entry // general format of the entries
     int id;        // unique value for every entry
     char name[30]; //
     int doc;       // document with 8 digits
-    char cob[20];  // country of birth
+    char cob[25];  // country of birth
     char room[10]; // letter + 3 digits number
     char ci[15];   // check-in date
     char co[15];   // check-out date

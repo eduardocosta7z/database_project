@@ -62,7 +62,7 @@ void database_header()
 {
     printf(LINE);
     printf("| ID   | Name                     | Document |");
-    printf(" COB          | Room | Check-in   | Check-out  |\n");
+    printf(" COB                  | Room | Check-in   | Check-out  |\n");
     printf(LINE);
 }
 
@@ -91,8 +91,9 @@ int list_database() // print all the entries on database and returns the number 
         num_entries++;
 
         replace_char(sptr->name, '*', ' ');
+        replace_char(sptr->cob, '*', ' ');
 
-        printf("| %.4d | %-24s | %d | %-12s | %-4s | %s | %s |\n",
+        printf("| %.4d | %-24s | %d | %-20s | %-4s | %s | %s |\n",
                sptr->id, sptr->name, sptr->doc, sptr->cob,
                sptr->room, sptr->ci, sptr->co);
         printf(LINE);
@@ -134,8 +135,9 @@ int search_database(char wrd[30]) // search for a word in the database, print th
                    &sptr->room, &sptr->ci, &sptr->co);
 
             replace_char(sptr->name, '*', ' ');
+            replace_char(sptr->cob, '*', ' ');
 
-            printf("| %.4d | %-24s | %d | %-12s | %-4s | %-10s | %-10s |\n",
+            printf("| %.4d | %-24s | %d | %-20s | %-4s | %-10s | %-10s |\n",
                    sptr->id, sptr->name, sptr->doc, sptr->cob,
                    sptr->room, sptr->ci, sptr->co);
             printf(LINE);
