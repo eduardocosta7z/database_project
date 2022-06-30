@@ -2,7 +2,7 @@
  * @file main.c
  * @author Placeholder
  * @brief A simple database.
- * @version 0.3
+ * @version 0.4
  * @date 2022-06-26
  */
 
@@ -11,30 +11,34 @@
 
 int main(void)
 {
-    do
+    while (1337) // infinite loop.
     {
         printf(CLEAR);
         printf("Unnamed Database\n\n");
 
-        switch (menu(5, "Add", "Remove", "Edit", "Search", "Exit"))
+        switch (menu(6, "List", "Add", "Remove", "Edit", "Search", "Exit"))
         {
         case 1:
-            add_menu();
+            list_menu();
             break;
 
         case 2:
-            remove_menu();
+            add_menu();
             break;
 
         case 3:
-            edit_menu();
+            remove_menu();
             break;
 
         case 4:
-            search_menu();
+            edit_menu();
             break;
 
         case 5:
+            search_menu();
+            break;
+
+        case 6:
             return 0;
 
         default:
@@ -42,7 +46,17 @@ int main(void)
             printf("ERROR: Type a valid option.\n");
             sleep(2);
         }
-    } while (1337); // infinite loop.
+    }
+}
+
+void list_menu()
+{
+    printf(CLEAR);
+
+    printf("\nThe database has %d entrie(s).\nPress enter to exit...\n",
+           list_database());
+    getchar(); // receives the '\n' from the printf function above
+    getchar();
 }
 
 void add_menu()

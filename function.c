@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdarg.h>
@@ -23,11 +24,11 @@ int menu(int num_args, ...) // automatically displays a menu and returns the sel
     return i;
 }
 
-int y_or_n(char *txt) // printf
+int y_or_n(char *question) // prints the question and ask for yes or no, returns 'true' if yes
 {
     char choice;
 
-    printf("%s [y/n]: ", txt);
+    printf("%s [y/n]: ", question);
     scanf(" %c", &choice);
 
     if (choice == 'y')
@@ -36,11 +37,37 @@ int y_or_n(char *txt) // printf
         return 0;
 }
 
-int search_database(char wrd[30]) // search for a word in the database, print the line that matches and returns the number of results
-{
-    char line[100];
-    int i, num_results = 0;
+void replace_char(char *str, char find, char replace) // find all the occurrences of a character in a
+{                                                     // string and replace it
+    char *current_pos = strchr(str, find);
+    while (current_pos)
+    {
+        *current_pos = replace;
+        current_pos = strchr(current_pos, find);
+    }
+}
 
+char *lcase(const char *str)
+{
+    char *str_lc = malloc(sizeof(char) * strlen(str) + 1);
+
+    int i;
+    for (i = 0; str[i]; i++)
+        str_lc[i] = tolower(str[i]);
+
+    return str_lc;
+}
+
+void database_header()
+{
+    printf(LINE);
+    printf("| ID   | Name                     | Document |");
+    printf(" COB          | Room | Check-in   | Check-out  |\n");
+    printf(LINE);
+}
+
+int list_database() // print all the entries on database and returns the number of entries
+{
     FILE *fptr = fopen("database.txt", "r");
 
     if (fptr == NULL)
@@ -48,18 +75,70 @@ int search_database(char wrd[30]) // search for a word in the database, print th
         printf("ERROR: Couldn't find database.\n");
         return 0;
     }
-    while (fscanf(fptr, "%[^\n]\n", line) != EOF) // search the file line by line
+
+    char line[100];
+    int num_entries = 0;
+
+    struct database_entry *sptr, list;
+    sptr = &list;
+
+    database_header();
+
+    while (fscanf(fptr, "%d %s %d %s %s %s %s",
+                  &sptr->id, &sptr->name, &sptr->doc, &sptr->cob,
+                  &sptr->room, &sptr->ci, &sptr->co) != EOF)
     {
-        for (i = 0; wrd[i]; i++) // converts to lowercase
-            wrd[i] = tolower(wrd[i]);
+        num_entries++;
 
-        for (i = 0; line[i]; i++)
-            line[i] = tolower(line[i]);
+        replace_char(sptr->name, '*', ' ');
 
-        if (strstr(line, wrd) != NULL) // checks if line contains wrd
+        printf("| %.4d | %-24s | %d | %-12s | %-4s | %s | %s |\n",
+               sptr->id, sptr->name, sptr->doc, sptr->cob,
+               sptr->room, sptr->ci, sptr->co);
+        printf(LINE);
+    }
+
+    fclose(fptr);
+
+    return num_entries;
+}
+
+int search_database(char wrd[30]) // search for a word in the database, print the line
+{                                 // that matches and returns the number of results
+    FILE *fptr = fopen("database.txt", "r");
+
+    if (fptr == NULL)
+    {
+        printf("ERROR: Couldn't find database.\n");
+        return 0;
+    }
+
+    char line[100];
+    int i, num_results = 0;
+
+    struct database_entry *sptr, list;
+    sptr = &list;
+
+    printf(CLEAR);
+
+    database_header();
+
+    while (fscanf(fptr, "%[^\n]\n", line) != EOF) // scan the file line by line
+    {
+        if (strstr(lcase(line), lcase(wrd)) != NULL) // checks if line contains wrd
         {
             num_results++;
-            printf("%s\n", line);
+
+            sscanf(line, "%d %s %d %s %s %s %s",
+                   &sptr->id, &sptr->name, &sptr->doc, &sptr->cob,
+                   &sptr->room, &sptr->ci, &sptr->co);
+
+            replace_char(sptr->name, '*', ' ');
+
+            printf("| %.4d | %-24s | %d | %-12s | %-4s | %-10s | %-10s |\n",
+                   sptr->id, sptr->name, sptr->doc, sptr->cob,
+                   sptr->room, sptr->ci, sptr->co);
+            printf(LINE);
         }
     }
 
