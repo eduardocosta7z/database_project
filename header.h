@@ -15,6 +15,7 @@ void database_header();
 
 int list_database();
 int search_database(char wrd[30]);
+int remove_database(int selected_id);
 
 void list_menu();
 void add_menu();

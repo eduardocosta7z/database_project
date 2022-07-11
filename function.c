@@ -104,6 +104,45 @@ int list_database() // print all the entries on database and returns the number 
     return num_entries;
 }
 
+int remove_database(int selected_id)
+{
+    FILE *fptr, *fptr2;
+
+    fptr = fopen("database.txt", "r");
+
+    if (fptr == NULL)
+    {
+        printf("ERROR: Couldn't find database.\n");
+        return 0;
+    }
+
+    fptr2 = fopen("database2.txt", "w");
+
+    char line[100];
+    int id, test_var = 0;
+
+    while (fscanf(fptr, "%[^\n]\n", line) != EOF)
+    {
+        sscanf(line, "%d", &id);
+
+        if (selected_id == id)
+            test_var = 1;
+        else
+            fprintf(fptr2, "%s\n", line);
+    }
+
+    fclose(fptr);
+    fclose(fptr2);
+
+    remove("database.txt");
+    rename("database2.txt", "database.txt");
+
+    if (test_var == 1)
+        return 1;
+    else
+        return 0;
+}
+
 int search_database(char wrd[30]) // search for a word in the database, print the line
 {                                 // that matches and returns the number of results
     FILE *fptr = fopen("database.txt", "r");

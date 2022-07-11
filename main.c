@@ -2,7 +2,7 @@
  * @file main.c
  * @author Placeholder
  * @brief A simple database.
- * @version 0.4
+ * @version 0.5
  * @date 2022-06-26
  */
 
@@ -14,7 +14,7 @@ int main(void)
     while (1337) // infinite loop.
     {
         printf(CLEAR);
-        printf("Unnamed Database\n\n");
+        printf("Hotel Database\n\n");
 
         switch (menu(6, "List", "Add", "Remove", "Edit", "Search", "Exit"))
         {
@@ -69,7 +69,18 @@ void add_menu()
 void remove_menu()
 {
     printf(CLEAR);
-    printf("REMOVE MENU\nWork in progress...\n"); // TODO
+
+    int id;
+
+    printf("Insert the ID to be deleted: ");
+    scanf("%d", &id);
+
+    if (y_or_n("Are you sure?"))
+        if (remove_database(id))
+            printf("Sucessful deleted entry with id %d.\n", id);
+        else
+            printf("Can't find entry with id %d.\n", id);
+
     sleep(2);
 }
 
