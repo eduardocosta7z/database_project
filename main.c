@@ -1,9 +1,8 @@
 /**
  * @file main.c
- * @author Placeholder
- * @brief A simple database.
- * @version 0.6
- * @date 2022-06-26
+ * @brief A simple hotel database.
+ * @version 0.7
+ * @date 2022-07-11
  */
 
 #include <unistd.h> // used for the sleep function.
@@ -54,7 +53,7 @@ void list_menu()
 {
     printf(CLEAR);
 
-    printf("\nThe database has %d entrie(s).\nPress enter to exit...\n",
+    printf("\nThe database has %d entry(es).\nPress enter to exit...\n",
            list_database());
     getchar(); // receives the '\n' from the printf function above
     getchar();
@@ -66,7 +65,7 @@ void add_menu()
     if (add_database())
     {
         printf("Added to database.\n\n");
-        if (y_or_n("\nAdd another entry?"))
+        if (y_or_n("Add another entry?"))
             add_menu();
     }
     else
@@ -98,8 +97,21 @@ void remove_menu()
 void edit_menu()
 {
     printf(CLEAR);
-    printf("EDIT MENU\nWork in progress...\n"); // TODO
-    sleep(2);
+
+    int id;
+
+    printf("Insert the ID to be edited: ");
+    scanf("%d", &id);
+
+    printf(CLEAR);
+
+    if (edit_database(id))
+        printf("\nSucessful edited entry with id %d.\n", id);
+    else
+        printf("\nCan't find entry with id %d.\n", id);
+
+    if (y_or_n("\nEdit another entry?"))
+        remove_menu();
 }
 
 void search_menu()

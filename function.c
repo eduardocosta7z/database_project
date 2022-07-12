@@ -47,7 +47,7 @@ void replace_char(char *str, char find, char replace) // find all the occurrence
     }
 }
 
-char *lcase(const char *str)
+char *lcase(const char *str) // converts a string to lowercase using tolower()
 {
     char *str_lc = malloc(sizeof(char) * strlen(str) + 1);
 
@@ -58,7 +58,7 @@ char *lcase(const char *str)
     return str_lc;
 }
 
-void database_header()
+void database_header() // print a header for printing the database
 {
     printf(LINE);
     printf("| ID   | Name                     | Document |");
@@ -104,7 +104,7 @@ int list_database() // print all the entries on database and returns the number 
     return num_entries;
 }
 
-int add_database()
+int add_database() // adds an entry to database
 {
     struct database_entry *sptr, guest;
     sptr = &guest;
@@ -163,9 +163,9 @@ int add_database()
     return 1;
 }
 
-int remove_database(int selected_id)
+int remove_database(int selected_id) // removes an entry from database, returns "true" if sucess
 {
-    FILE *fptr, *fptr2;
+    FILE *fptr, *fptr2; // uses two files, remove and rename at the end
 
     fptr = fopen("database.txt", "r");
 
@@ -186,6 +186,114 @@ int remove_database(int selected_id)
 
         if (selected_id == id)
             test_var = 1;
+        else
+            fprintf(fptr2, "%s\n", line);
+    }
+
+    fclose(fptr);
+    fclose(fptr2);
+
+    remove("database.txt");
+    rename("database2.txt", "database.txt");
+
+    if (test_var == 1)
+        return 1;
+    else
+        return 0;
+}
+
+int edit_database(int selected_id) // edit an entry from database, returns "true" if sucess
+{
+    FILE *fptr, *fptr2; // uses two files, remove and rename at the end
+
+    fptr = fopen("database.txt", "r");
+
+    if (fptr == NULL)
+    {
+        printf("\nERROR: Couldn't find database.\n");
+        return 0;
+    }
+
+    fptr2 = fopen("database2.txt", "w");
+
+    struct database_entry *sptr, guest;
+    sptr = &guest;
+
+    char line[100];
+    int test_var = 0;
+
+    while (fscanf(fptr, "%[^\n]\n", line) != EOF)
+    {
+        sscanf(line, "%d %s %s %s %s %s %s",
+               &sptr->id, &sptr->name, &sptr->doc, &sptr->cob,
+               &sptr->room, &sptr->ci, &sptr->co);
+
+        if (selected_id == sptr->id)
+        {
+            test_var = 1;
+
+            switch (menu(6, "Name", "Document", "Country of Birth",
+                         "Room", "Check-in Date", "Check-out Date"))
+            {
+            case 1:
+                printf(CLEAR);
+                replace_char(sptr->name, '*', ' ');
+                printf("Old name: %s\n", sptr->name);
+                printf("New name: ");
+                getchar();
+                scanf("%[^\n]%*c", sptr->name);
+                break;
+
+            case 2:
+                printf(CLEAR);
+                printf("Old document: %s\n", sptr->doc);
+                printf("New document: ");
+                scanf("%s", sptr->doc);
+                break;
+
+            case 3:
+                printf(CLEAR);
+                replace_char(sptr->cob, '*', ' ');
+                printf("Old country of birth: %s\n", sptr->cob);
+                printf("New country of birth: ");
+                getchar();
+                scanf("%[^\n]%*c", sptr->cob);
+                break;
+
+            case 4:
+                printf(CLEAR);
+                printf("Old room: %s\n", sptr->room);
+                printf("New room: ");
+                scanf("%s", sptr->room);
+                break;
+
+            case 5:
+                printf(CLEAR);
+                printf("Old check-in date: %s\n", sptr->ci);
+                printf("New check-in date: ");
+                scanf("%s", sptr->ci);
+                break;
+
+            case 6:
+                printf(CLEAR);
+                printf("Old check-out date: %s\n", sptr->co);
+                printf("New check-out date: ");
+                scanf("%s", sptr->co);
+                break;
+
+            default:
+                printf(CLEAR);
+                printf("ERROR: Type a valid option.\n");
+                return 0;
+            }
+
+            replace_char(sptr->name, ' ', '*');
+            replace_char(sptr->cob, ' ', '*');
+
+            fprintf(fptr2, "%d %s %s %s %s %s %s\n",
+                    sptr->id, sptr->name, sptr->doc, sptr->cob,
+                    sptr->room, sptr->ci, sptr->co);
+        }
         else
             fprintf(fptr2, "%s\n", line);
     }
