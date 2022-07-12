@@ -2,7 +2,7 @@
  * @file main.c
  * @author Placeholder
  * @brief A simple database.
- * @version 0.5
+ * @version 0.6
  * @date 2022-06-26
  */
 
@@ -39,6 +39,7 @@ int main(void)
             break;
 
         case 6:
+            printf(CLEAR);
             return 0;
 
         default:
@@ -62,8 +63,17 @@ void list_menu()
 void add_menu()
 {
     printf(CLEAR);
-    printf("ADD MENU\nWork in progress...\n"); // TODO
-    sleep(2);
+    if (add_database())
+    {
+        printf("Added to database.\n\n");
+        if (y_or_n("\nAdd another entry?"))
+            add_menu();
+    }
+    else
+    {
+        printf("ERROR: Couldn't find database.\n");
+        sleep(2);
+    }
 }
 
 void remove_menu()
@@ -77,11 +87,12 @@ void remove_menu()
 
     if (y_or_n("Are you sure?"))
         if (remove_database(id))
-            printf("Sucessful deleted entry with id %d.\n", id);
+            printf("\nSucessful deleted entry with id %d.\n", id);
         else
-            printf("Can't find entry with id %d.\n", id);
+            printf("\nCan't find entry with id %d.\n", id);
 
-    sleep(2);
+    if (y_or_n("\nRemove another entry?"))
+        remove_menu();
 }
 
 void edit_menu()

@@ -84,7 +84,7 @@ int list_database() // print all the entries on database and returns the number 
 
     database_header();
 
-    while (fscanf(fptr, "%d %s %d %s %s %s %s",
+    while (fscanf(fptr, "%d %s %s %s %s %s %s",
                   &sptr->id, &sptr->name, &sptr->doc, &sptr->cob,
                   &sptr->room, &sptr->ci, &sptr->co) != EOF)
     {
@@ -93,7 +93,7 @@ int list_database() // print all the entries on database and returns the number 
         replace_char(sptr->name, '*', ' ');
         replace_char(sptr->cob, '*', ' ');
 
-        printf("| %.4d | %-24s | %d | %-20s | %-4s | %s | %s |\n",
+        printf("| %.4d | %-24s | %-8s | %-20s | %-4s | %s | %s |\n",
                sptr->id, sptr->name, sptr->doc, sptr->cob,
                sptr->room, sptr->ci, sptr->co);
         printf(LINE);
@@ -104,6 +104,65 @@ int list_database() // print all the entries on database and returns the number 
     return num_entries;
 }
 
+int add_database()
+{
+    struct database_entry *sptr, guest;
+    sptr = &guest;
+
+    FILE *fptr = fopen("database.txt", "r");
+
+    if (fptr == NULL)
+        return 0;
+
+    char line[100];
+    int last_id;
+
+    while (fscanf(fptr, "%[^\n]\n", line) != EOF)
+        sscanf(line, "%d", &last_id);
+
+    sptr->id = last_id + 1;
+
+    fclose(fptr);
+
+    getchar();
+
+    printf("Name (max of 24 char)             | ");
+    scanf("%[^\n]%*c", sptr->name);
+
+    printf("Document (8 digits)               | ");
+    scanf("%s", sptr->doc);
+
+    getchar();
+
+    printf("Country of birth (max of 20 char) | ");
+    scanf("%[^\n]%*c", sptr->cob);
+
+    printf("Room (1 letter + 3 numbers)       | ");
+    scanf("%s", sptr->room);
+
+    printf("Check-in date (dd/mm/yyyy)        | ");
+    scanf("%s", sptr->ci);
+
+    printf("Check-out date (dd/mm/yyyy)       | ");
+    scanf("%s", sptr->co);
+
+    replace_char(sptr->name, ' ', '*');
+    replace_char(sptr->cob, ' ', '*');
+
+    if (y_or_n("\nAdd the entry?"))
+    {
+        FILE *fptr2 = fopen("database.txt", "a");
+
+        fprintf(fptr2, "%d %s %s %s %s %s %s\n",
+                sptr->id, sptr->name, sptr->doc, sptr->cob,
+                sptr->room, sptr->ci, sptr->co);
+
+        fclose(fptr2);
+    }
+
+    return 1;
+}
+
 int remove_database(int selected_id)
 {
     FILE *fptr, *fptr2;
@@ -112,7 +171,7 @@ int remove_database(int selected_id)
 
     if (fptr == NULL)
     {
-        printf("ERROR: Couldn't find database.\n");
+        printf("\nERROR: Couldn't find database.\n");
         return 0;
     }
 
@@ -169,14 +228,14 @@ int search_database(char wrd[30]) // search for a word in the database, print th
         {
             num_results++;
 
-            sscanf(line, "%d %s %d %s %s %s %s",
+            sscanf(line, "%d %s %s %s %s %s %s",
                    &sptr->id, &sptr->name, &sptr->doc, &sptr->cob,
                    &sptr->room, &sptr->ci, &sptr->co);
 
             replace_char(sptr->name, '*', ' ');
             replace_char(sptr->cob, '*', ' ');
 
-            printf("| %.4d | %-24s | %d | %-20s | %-4s | %-10s | %-10s |\n",
+            printf("| %.4d | %-24s | %-8s | %-20s | %-4s | %-10s | %-10s |\n",
                    sptr->id, sptr->name, sptr->doc, sptr->cob,
                    sptr->room, sptr->ci, sptr->co);
             printf(LINE);
@@ -187,5 +246,3 @@ int search_database(char wrd[30]) // search for a word in the database, print th
 
     return num_results;
 }
-
-// TODO: space for future functions.
